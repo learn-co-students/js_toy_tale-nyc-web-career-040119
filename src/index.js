@@ -87,7 +87,7 @@ function addToyHelper(id, name, image, likes){
         Accept: "application/json"
       },
       body: JSON.stringify({
-        "likes": likes++
+        "likes": ++likes
       })
     }) // end fetch
       .then(response => response.json())
