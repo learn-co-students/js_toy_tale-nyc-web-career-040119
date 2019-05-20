@@ -26,7 +26,19 @@ fetch(TOYS_URL)
   .then(resp => resp.json())
   .then(toys => {
     toys.forEach(toy => {
+
       addToyHelper(toy.id, toy.name, toy.image, toy.likes)
+
+      // const likeButton = document.querySelector(`button`)
+      //
+      // likeButton.addEventListener("click", () => {
+      //   console.log("Dan did this")
+      // })
+
+      // document.querySelector(`#button-${toy.id}`).addEventListener("click", () => {
+      //   console.log("test")
+      // })
+
     })
   })
 // end FETCH
@@ -62,32 +74,38 @@ toyForm.addEventListener("submit", event => {
   toyForm.reset()
 })
 
-// UPDATE
-
-// listen for a button click
-// click and patch
-
-// fetch(TOYS_URL + `/${id}`, {
-//   method: 'PATCH',
-//   headers: {
-//     "Content-Type": "application/json",
-//     Accept: "application/json"
-//   },
-//   body: {
-//     "likes": +=1
-//   }
-// })
-
-
 // HELPER FUNCTIONS
 function addToyHelper(id, name, image, likes){
-  toyContainer.innerHTML += `
-  <div class="card" id="${id}">
+  let newToy = document.createElement("div")
+  newToy.className = "card"
+  newToy.id = `${id}`
+  newToy.innerHTML = `
     <h2>${name}</h2>
     <img src=${image} class="toy-avatar" />
     <p>${likes} Likes </p>
-    <button class="like-btn" id="${id}">Like <3</button>
-  </div>
+    <button class="like-btn" id="button-${id}">Like <3</button>
   `
+  toyContainer.appendChild(newToy)
+
+  // UPDATE
+  const likeButton = newToy.querySelector(`button`)
+  likeButton.addEventListener("click", () => {
+    // PATCH REQUEST
+    fetch(TOYS_URL + `/${id}`, {
+      method: 'PATCH',
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: {
+        "likes": Number(likes) + 1
+      }
+    }) // end fetch
+      .then(response => response.json())
+      .then(like => {
+        newToy.querySelector("p").innerText = `${likes} Likes`
+      })
+    // end PATCH REQUEST
+  })
 }
 // end HELPER FUNCTIONS
