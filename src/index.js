@@ -1,12 +1,14 @@
+const TOYS_URL = "http://localhost:3000/toys"
+// Add Toy Form Variables
 const addBtn = document.querySelector('#new-toy-btn')
 const toyForm = document.querySelector('.container')
 const toyName = document.querySelector('#toy-name')
 const toyImg = document.querySelector('#toy-image')
-const toyCards = document.querySelector('#toy-collection')
 let addToy = false
+// Holds All Toy Cards
+const toyCards = document.querySelector('#toy-collection')
 
-
-// YOUR CODE HERE
+// Load All Toys On Front Page
 fetch("http://localhost:3000/toys")
   .then(resp=>resp.json())
   .then(function(toys) {
@@ -15,68 +17,43 @@ fetch("http://localhost:3000/toys")
         <div class="card">
           <h2>${toy.name}</h2>
           <img src=${toy.image} class="toy-avatar"/>
-          <p id="l${toy.id}">${toy.likes} Likes</p>
+          <p>${toy.likes} Likes</p>
           <button class="like-btn" id="${toy.id}">Like <3</button>
         </div>
       `
     })
   })
-
-toyForm.addEventListener('submit', function(e) {
-  fetch("http://localhost:3000/toys", {
-    method: "POST",
-    headers:
-    {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-
-    body: JSON.stringify(
-    {
-      "name": `${toyName.value}`,
-      "image": `${toyImg.value}`,
-      "likes": 0
-    })
-  })
-})
-
-toyCards.addEventListener('click',function(e) {
-  fetch(`http://localhost:3000/toys/${e.target.id}`)
-    .then(resp=>resp.json())
-    .then(function(toy) {
-      fetch(`http://localhost:3000/toys/${e.target.id}`, {
-        method: "PATCH",
-        headers:
-        {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-
-        body: JSON.stringify(
-          {
-            "likes": ++toy.likes
-          })
-      })
-      const myLikes = document.querySelector(`#l${toy.id}`)
-      myLikes.innerText = `${toy.likes} Likes`
-    })
-})
-
-// OR HERE!
-
-
-
-
-
-
-
+// Add New Toy
 addBtn.addEventListener('click', () => {
-  // hide & seek with the form
   addToy = !addToy
   if (addToy) {
     toyForm.style.display = 'block'
-    // submit listener here
+    toyForm.addEventListener('submit', e => {
+      fetFunc(TOYS_URL, "POST", {"name": `${toyName.value}`, "image": `${toyImg.value}`, "likes": 0})
+    })
   } else {
     toyForm.style.display = 'none'
   }
 })
+
+// Add Likes to Toy
+toyCards.addEventListener('click',function(e) {
+  let toyID = e.target.id
+  let likesStr = e.target.previousElementSibling
+  let likeNum = parseInt(likesStr.innerText)
+  likesStr.innerText = `${++likeNum} Likes`
+  fetFunc(TOYS_URL + `/${toyID}`, "PATCH", {"likes": likeNum})
+})
+
+// Helper Method For Fetching
+function fetFunc(url,method,body) {
+  fetch(url, {
+    method: method,
+    headers:
+      {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+    body: JSON.stringify(body)
+  })
+}
