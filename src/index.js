@@ -2,6 +2,7 @@ const addBtn = document.querySelector('#new-toy-btn')
 const toyForm = document.querySelector('.container')
 let addToy = false
 
+// 1) Add an event listener to the "add new toy" button
 addBtn.addEventListener('click', () => {
   // hide & seek with the form
   addToy = !addToy
@@ -47,11 +48,12 @@ addBtn.addEventListener('click', () => {
   }
 })
 
-// Step 3: Add toy info to the card
+// Step 2: Fetch Andy's toys
 fetch('http://localhost:3000/toys')
 .then(function(response) {
   return response.json()
 })
+// Step 3: Add toy info to the card
 .then(function(toys) {
   const toyCollection = document.querySelector('#toy-collection')
   toys.forEach(function(toy) {
@@ -64,14 +66,6 @@ fetch('http://localhost:3000/toys')
     </div>
     `
   })
-})
-
-// Step 5: Increase toy's likes
-fetch('http://localhost:3000/toys')
-.then(function(response) {
-  return response.json()
-})
-.then(function(toys) {
   toys.forEach(function(toy) {
     const likeButton = document.querySelector(`#b${toy.id}`)
     const toyCard = document.getElementById(toy.id)
@@ -99,3 +93,12 @@ fetch('http://localhost:3000/toys')
     })
   })
 })
+
+// Step 5: Increase toy's likes
+// fetch('http://localhost:3000/toys')
+// .then(function(response) {
+//   return response.json()
+// })
+// .then(function(toys) {
+//
+// })
