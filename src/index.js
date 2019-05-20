@@ -26,19 +26,7 @@ fetch(TOYS_URL)
   .then(resp => resp.json())
   .then(toys => {
     toys.forEach(toy => {
-
       addToyHelper(toy.id, toy.name, toy.image, toy.likes)
-
-      // const likeButton = document.querySelector(`button`)
-      //
-      // likeButton.addEventListener("click", () => {
-      //   console.log("Dan did this")
-      // })
-
-      // document.querySelector(`#button-${toy.id}`).addEventListener("click", () => {
-      //   console.log("test")
-      // })
-
     })
   })
 // end FETCH
@@ -83,12 +71,13 @@ function addToyHelper(id, name, image, likes){
     <h2>${name}</h2>
     <img src=${image} class="toy-avatar" />
     <p>${likes} Likes </p>
-    <button class="like-btn" id="button-${id}">Like <3</button>
+    <button class="like-btn">Like <3</button>
   `
   toyContainer.appendChild(newToy)
 
   // UPDATE
   const likeButton = newToy.querySelector(`button`)
+
   likeButton.addEventListener("click", () => {
     // PATCH REQUEST
     fetch(TOYS_URL + `/${id}`, {
@@ -97,15 +86,17 @@ function addToyHelper(id, name, image, likes){
         "Content-Type": "application/json",
         Accept: "application/json"
       },
-      body: {
-        "likes": Number(likes) + 1
-      }
+      body: JSON.stringify({
+        "likes": likes++
+      })
     }) // end fetch
       .then(response => response.json())
-      .then(like => {
-        newToy.querySelector("p").innerText = `${likes} Likes`
+      .then(likeObj => {
+        const newToyPara = newToy.querySelector("p")
+        // update the innerText to the updated like count
+        newToyPara.innerText = `${likeObj.likes} Likes`
       })
     // end PATCH REQUEST
-  })
-}
+  }) // end likeButton event listener
+} // end addToyHelper
 // end HELPER FUNCTIONS
