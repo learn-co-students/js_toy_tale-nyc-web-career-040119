@@ -30,24 +30,23 @@ addBtn.addEventListener('click', () => {
           return response.json()
         })
         .then(function(toy){
-        let newToy={};
-        newToy=toy;
-        const toysContainer = document.querySelector('#toy-collection')
         toysContainer.innerHTML =+ `
-        <div class="card" id="${toy.id}">
+        <div class="card">
           <h2>${toy.name}</h2>
           <img src="${toy.image}" class="toy-avatar" />
           <p>${toy.likes} Likes </p>
-          <button class="like-btn">Like <3</button>
+          <button class="like-btn" id="${toy.id}">Like <3</button>
         </div>
         `
       })
+      return newToy;
     })
   } else {
     toyForm.style.display = 'none'
   }
 })
 
+const toysContainer = document.querySelector('#toy-collection')
 
 
 fetch('http://localhost:3000/toys', {method: 'GET'})
@@ -56,17 +55,23 @@ fetch('http://localhost:3000/toys', {method: 'GET'})
 })
 .then(function(toysObj){
   console.log(toysObj)
-  const toysContainer = document.querySelector('#toy-collection')
   toysObj.forEach(function(toy){
     toysContainer.innerHTML += `
-    <div class="card" id="${toy.id}">
+    <div class="card">
       <h2>${toy.name}</h2>
       <img src="${toy.image}" class="toy-avatar" />
       <p>${toy.likes} Likes </p>
-      <button class="like-btn">Like <3</button>
+      <button class="like-btn" id="${toy.id}">Like <3</button>
     </div>
     `
   })
   })
+
+  toysContainer.addEventListener('click', function(event){
+    let targetEvent = event.target;
+    console.log(targetEvent)
+
+
+    })
 
 // OR HERE!
