@@ -89,10 +89,29 @@ fetch(allToys, { method: "GET"
                          `;
   });
 });
-  toyColl.addEventListener('click', function(e){
-    // console.log(e.target);
-    console.log(e.target);
-    let clickedToyID = e.target.id;
+toyColl.addEventListener('click', function(e)
+{
+ // console.log(e.target);
+ let clickedToyId = e.target.id;
+ let pTag = e.target.previousElementSibling;
+ let likeNum = parseInt(pTag.innerText);
+ // pTag.innerText = `${likeNum + 1} Likes`
 
-    fetch();
+ fetch(`http://localhost:3000/toys/${clickedToyId}`,
+{
+     method: "PATCH",
+     headers:
+     {
+       "Content-Type": "application/json",
+       Accept: "application/json"
+     },
+     body: JSON.stringify(
+       {
+         "likes": ++likeNum
+       }
+   )
+})
+  .then(pTag.innerText = `${likeNum} Likes`);
+   // .then(updatedToy => console.log(updatedToy))
+
 });
