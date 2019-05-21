@@ -68,8 +68,22 @@ fetch('http://localhost:3000/toys', {method: 'GET'})
   })
 
   toysContainer.addEventListener('click', function(event){
-    let targetEvent = event.target;
-    console.log(targetEvent)
+    let targetEvent = event.target
+
+    let targetId = parseInt(event.target.id)
+    let pTag = targetEvent.previousElementSibling
+    let numLikes = parseInt(pTag.innerText[0])
+    pTag.innerText = `${numLikes + 1} Likes`
+    fetch(`http://localhost:3000/toys/${targetId}`, {
+                              method:"PATCH",
+                              headers: {
+                                "Content-Type":"application/json",
+                                Accept: "application/json"
+                              },
+                              body: JSON.stringify({
+                                "likes": ++numLikes
+                              })
+                            }).then(pTag.innerText)
 
 
     })
